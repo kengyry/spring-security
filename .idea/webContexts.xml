@@ -4,7 +4,9 @@
     <option name="state">
       <map>
         <entry key="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages/addUser.html" value="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages" />
+        <entry key="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages/admin/user-list.html" value="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages/admin" />
         <entry key="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages/index.html" value="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages" />
+        <entry key="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages/user-create.html" value="file://$PROJECT_DIR$/src/webapp/WEB-INF/pages" />
       </map>
     </option>
   </component>

@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface UserDao {
 
+    User findByLastName(String lastname);
+
     User findById(Long id);
 
     List<User> findAll();

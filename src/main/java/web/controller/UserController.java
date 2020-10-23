@@ -11,24 +11,39 @@ import web.service.UserService;
 import java.util.List;
 
 @Controller
+@RequestMapping("/admin/**")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = "/")
-    public ModelAndView findAll() {
+    @GetMapping(value = "admin/user-list")
+    public ModelAndView findAllAdmin() {
         ModelAndView modelAndView = new ModelAndView();
         List<User> users = userService.findAll();
-        modelAndView.setViewName("index");
+        modelAndView.setViewName("admin/user-list");
         modelAndView.addObject("users", users);
         return modelAndView;
     }
 
+    @GetMapping(value = "user/user-list")
+    public ModelAndView findAllUser() {
+        ModelAndView modelAndView = new ModelAndView();
+        List<User> users = userService.findAll();
+        modelAndView.setViewName("user/user-list");
+        modelAndView.addObject("users", users);
+        return modelAndView;
+    }
+
+   /* @GetMapping(value = "login")
+    public String loginPage() {
+        return "login";
+    }*/
+
     @GetMapping("/user-create")
     public ModelAndView createUserForm(User user) {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("user-create");
+        modelAndView.setViewName("admin/user-create");
         modelAndView.addObject("user", user);
         return modelAndView;
     }
@@ -37,7 +52,7 @@ public class UserController {
     public ModelAndView createUser(User user) {
         ModelAndView modelAndView = new ModelAndView();
         userService.saveUser(user);
-        modelAndView.setViewName("redirect:/");
+        modelAndView.setViewName("redirect:/admin/user-list");
         return modelAndView;
     }
 
@@ -45,7 +60,7 @@ public class UserController {
     public ModelAndView deleteUser(@PathVariable("id") Long id) {
         ModelAndView modelAndView = new ModelAndView();
         userService.deleteById(id);
-        modelAndView.setViewName("redirect:/");
+        modelAndView.setViewName("redirect:/admin/user-list");
         return modelAndView;
     }
 
@@ -54,7 +69,7 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView();
         User user = userService.findById(id);
         model.addAttribute("user", user);
-        modelAndView.setViewName("/user-update");
+        modelAndView.setViewName("admin/user-update");
         modelAndView.addObject("id", id);
         return modelAndView;
     }
@@ -63,7 +78,7 @@ public class UserController {
     public ModelAndView updateUser(User user) {
         ModelAndView modelAndView = new ModelAndView();
         userService.updateUser(user);
-        modelAndView.setViewName("redirect:/");
+        modelAndView.setViewName("redirect:/admin/user-list");
         modelAndView.addObject("user", user);
         return modelAndView;
     }

@@ -11,6 +11,21 @@ public class UserDaoImpl implements UserDao {
     @PersistenceContext
     private EntityManager entityManager;
 
+   /* @Override
+    public User findByLastName(String lastname) {
+        TypedQuery<User> query = entityManager.createQuery(
+                "SELECT u FROM User u WHERE u.lastName = :username", User.class);
+        return query.setParameter("username", lastname).getSingleResult();
+    }*/
+
+    @Override
+    public User findByLastName(String lastname) {
+        return entityManager.createQuery("SELECT u FROM User u WHERE u.lastName = :userName", User.class)
+                .setParameter("userName", lastname)
+                .setMaxResults(1)
+                .getSingleResult();
+    }
+
     @Override
     public User findById(Long id) {
         return entityManager.find(User.class, id);
