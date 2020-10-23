@@ -1,22 +1,26 @@
 package web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import web.Model.Role;
 import web.Model.User;
 import web.service.UserService;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
-@RequestMapping("/admin/**")
+
 public class UserController {
 
     @Autowired
     private UserService userService;
 
+    // после логина попадаем сюда
     @GetMapping(value = "admin/user-list")
     public ModelAndView findAllAdmin() {
         ModelAndView modelAndView = new ModelAndView();
@@ -26,21 +30,16 @@ public class UserController {
         return modelAndView;
     }
 
-    @GetMapping(value = "user/user-list")
-    public ModelAndView findAllUser() {
+    @GetMapping(value = "user/user-list_")
+    public ModelAndView findAllUser(Principal currentUser) {
+        User user = userService.findByLastName(currentUser.getName());
         ModelAndView modelAndView = new ModelAndView();
-        List<User> users = userService.findAll();
-        modelAndView.setViewName("user/user-list");
-        modelAndView.addObject("users", users);
+        modelAndView.setViewName("user/user-list_");
+        modelAndView.addObject("users", user);
         return modelAndView;
     }
 
-   /* @GetMapping(value = "login")
-    public String loginPage() {
-        return "login";
-    }*/
-
-    @GetMapping("/user-create")
+    @GetMapping("admin/user-create")
     public ModelAndView createUserForm(User user) {
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("admin/user-create");
@@ -48,7 +47,7 @@ public class UserController {
         return modelAndView;
     }
 
-    @PostMapping("/user-create")
+    @PostMapping("admin/user-create")
     public ModelAndView createUser(User user) {
         ModelAndView modelAndView = new ModelAndView();
         userService.saveUser(user);
@@ -56,7 +55,7 @@ public class UserController {
         return modelAndView;
     }
 
-    @GetMapping("user-delete/{id}")
+    @GetMapping("admin/user-delete/{id}")
     public ModelAndView deleteUser(@PathVariable("id") Long id) {
         ModelAndView modelAndView = new ModelAndView();
         userService.deleteById(id);
@@ -64,19 +63,21 @@ public class UserController {
         return modelAndView;
     }
 
-    @GetMapping("user-update/{id}")
+    @GetMapping("admin/user-update/{id}")
     public ModelAndView updateUserForm(@PathVariable("id") Long id, Model model) {
         ModelAndView modelAndView = new ModelAndView();
+        System.out.println("зашли в гет");
         User user = userService.findById(id);
         model.addAttribute("user", user);
         modelAndView.setViewName("admin/user-update");
-        modelAndView.addObject("id", id);
+        //modelAndView.addObject("id", id);
         return modelAndView;
     }
 
-    @PostMapping("/user-update")
+    @PostMapping("admin/user-update")
     public ModelAndView updateUser(User user) {
         ModelAndView modelAndView = new ModelAndView();
+        System.out.println("зашли в пост");
         userService.updateUser(user);
         modelAndView.setViewName("redirect:/admin/user-list");
         modelAndView.addObject("user", user);

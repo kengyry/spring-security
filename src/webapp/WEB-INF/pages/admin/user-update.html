@@ -5,7 +5,7 @@
     <title>Create user</title>
 </head>
 <body>
-<form action="#" th:action="@{/user-update}" th:object="${user}" method="post">
+<form action="#" th:action="@{/admin/user-update}" th:object="${user}" method="post">
     <label for="id">ID</label>
     <input readonly type="number" th:field="*{id}" id="id" placeholder="ID">
     <label for="firstName">First Name</label>
@@ -15,6 +15,7 @@
     <label for="email">E-mail</label>
     <input type="text" th:field="*{email}" id="email" placeholder="E-Mail">
     <input type="submit" value="Update User">
+    <p><a th:href="@{/logout}">Logout</a></p>
 </form>
 </body>
 </html>

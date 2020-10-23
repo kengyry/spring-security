@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
+        /*http.formLogin()
                 // указываем страницу с формой логина
                 .loginPage("/login")
                 //указываем логику обработки при логине
@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .usernameParameter("j_username")
                 .passwordParameter("j_password")
                 // даем доступ к форме логина всем
-                .permitAll();
+                .permitAll().and().csrf().disable();
 
         http.logout()
                 // разрешаем делать логаут всем
@@ -60,14 +60,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").hasRole("USER")
                 // защищенные URL
                 // antMatchers("/").access("hasAnyRole('ADMIN')").
-                .anyRequest().authenticated();
+                .anyRequest().authenticated();*/
+
+        http
+                .csrf()
+                .disable()
+                .authorizeRequests()
+                .antMatchers("admin/**").hasRole("ADMIN")
+                .antMatchers("/user/**").hasRole("USER")
+                //.antMatchers("/login1").permitAll()
+                //.antMatchers("/reg/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                //.loginPage("/login")
+                .successHandler(new LoginSuccessHandler())
+                .permitAll()
+                .and().logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login");
+                /*.logout()
+                .permitAll()
+                .logoutSuccessUrl("/index");*/
     }
 
    @Bean
    public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userService);
-        //authenticationProvider.setPasswordEncoder(passwordEncoder());
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
         return authenticationProvider;
     }
 

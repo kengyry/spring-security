@@ -1,9 +1,13 @@
 package web.DAO;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+import web.Model.Role;
 import web.Model.User;
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -11,19 +15,11 @@ public class UserDaoImpl implements UserDao {
     @PersistenceContext
     private EntityManager entityManager;
 
-   /* @Override
+    @Override
     public User findByLastName(String lastname) {
         TypedQuery<User> query = entityManager.createQuery(
                 "SELECT u FROM User u WHERE u.lastName = :username", User.class);
         return query.setParameter("username", lastname).getSingleResult();
-    }*/
-
-    @Override
-    public User findByLastName(String lastname) {
-        return entityManager.createQuery("SELECT u FROM User u WHERE u.lastName = :userName", User.class)
-                .setParameter("userName", lastname)
-                .setMaxResults(1)
-                .getSingleResult();
     }
 
     @Override
@@ -56,5 +52,20 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void updateUser(User user) {
         entityManager.merge(user);
+    }
+
+    @Override
+    public Set<Role> getRoles(Set<String> role) {
+        return new HashSet<>(entityManager.createQuery("SELECT r FROM Role r WHERE r.name in (:role)")
+                .setParameter("role", role)
+                .getResultList());
+    }
+
+    @Override
+    public Role getRole(String name) {
+        return entityManager.createQuery("SELECT r FROM Role r WHERE r.role = :roleName", Role.class)
+                .setParameter("roleName", name)
+                .setMaxResults(1)
+                .getSingleResult();
     }
 }

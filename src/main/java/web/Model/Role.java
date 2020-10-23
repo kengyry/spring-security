@@ -3,6 +3,9 @@ package web.Model;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 // Этот класс реализует интерфейс GrantedAuthority, в котором необходимо переопределить только один метод getAuthority()
 // (возвращает имя роли).
@@ -12,8 +15,7 @@ import javax.persistence.*;
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
 
-    public Role() {
-    }
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,6 +23,20 @@ public class Role implements GrantedAuthority {
 
     @Column
     private String role;
+
+    @ManyToMany(mappedBy = "roles")
+    private Set<User> users = new HashSet<>();
+
+    public Set<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public Role() {
+    }
 
     public Role(Long id, String role) {
         this.id = id;

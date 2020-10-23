@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -33,15 +34,16 @@ public class User implements UserDetails {
    @ManyToMany
    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
            inverseJoinColumns = @JoinColumn(name = "role_id"))
-   private Collection<Role> roles;
+   private Set<Role> roles = new HashSet<>();
 
    public User() {
    }
 
-   public User(String firstName, String lastName, String email) {
+   public User(String firstName, String lastName, String email, Set<Role> roles) {
       this.firstName = firstName;
       this.lastName = lastName;
       this.email = email;
+      this.roles = roles;
    }
 
    public Long getId() {
@@ -117,7 +119,7 @@ public class User implements UserDetails {
       this.password = password;
    }
 
-   public Collection<Role> getRoles() {
+   public Set<Role> getRoles() {
       return roles;
    }
 
@@ -133,6 +135,8 @@ public class User implements UserDetails {
               ", firstName='" + firstName + '\'' +
               ", lastName='" + lastName + '\'' +
               ", email='" + email + '\'' +
+              ", password='" + password + '\'' +
+              ", roles=" + roles +
               '}';
    }
 }

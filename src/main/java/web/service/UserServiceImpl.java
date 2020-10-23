@@ -13,6 +13,7 @@ import web.Model.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,9 +64,20 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
+    public Set<Role> getRoles(Set<String> role) {
+        return userDao.getRoles(role);
+    }
+
+    @Transactional
+    @Override
+    public Role getRole(String name) {
+        return userDao.getRole(name);
+    }
+
+    @Transactional
+    @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = findByLastName(s);
-        System.out.println(111);
         if (user == null) {
             throw new UsernameNotFoundException("");
         }
