@@ -43,6 +43,8 @@ public class UserDaoImpl implements UserDao {
         return list;
     }
 
+    //Чтобы роли в базе roles не "размножались", здесь для роли юзера ищется такая же роль
+    // в БД, и присваивается ее id
     @Override
     public void saveUser(User user) {
         for (Role userRole : user.getRoles()) {
@@ -63,10 +65,9 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    // Но здесь это не работает, получаю исключение
     @Override
     public void updateUser(User user) {
-
-
         for (Role userRole : user.getRoles()) {
             for (Role dbRole : roleDao.findAllRoles()) {
                 if (dbRole.getAuthority().equals(userRole.getAuthority())) {
