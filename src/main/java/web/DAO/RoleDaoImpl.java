@@ -13,11 +13,6 @@ import java.util.stream.Collectors;
 @Repository
 public class RoleDaoImpl implements RoleDao {
 
-    public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
-        Set<Object> seen = ConcurrentHashMap.newKeySet();
-        return t -> seen.add(keyExtractor.apply(t));
-    }
-
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -32,7 +27,7 @@ public class RoleDaoImpl implements RoleDao {
     @Override
     public Set<Role> findAllRoles() {
         return new HashSet<>(entityManager.createQuery("SELECT r from Role r", Role.class)
-                .getResultList()).stream().filter(distinctByKey(Role::getRole)).collect(Collectors.toSet());
+                .getResultList());
     }
 
     @Override

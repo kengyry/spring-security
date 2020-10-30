@@ -44,8 +44,6 @@ public class UserController {
     @GetMapping("admin/user-create")
     public ModelAndView createUserForm(User user) {
         ModelAndView modelAndView = new ModelAndView();
-        //User user = new User();
-        //Set<Role> roles = roleService.getRoles(roleService.findAllRoles());
         Set<Role> uniqueRoles = roleService.findAllRoles();
         modelAndView.addObject("users", user);
         modelAndView.addObject("roles", uniqueRoles);
