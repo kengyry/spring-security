@@ -1,22 +1,17 @@
 package web.controller;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import web.Model.Role;
 import web.Model.User;
 import web.service.RoleService;
 import web.service.UserService;
-
 import java.security.Principal;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Controller
-
 public class UserController {
 
     private final UserService userService;
@@ -61,7 +56,6 @@ public class UserController {
     @PostMapping("admin/user-create")
     public ModelAndView createUser(User user) {
         ModelAndView modelAndView = new ModelAndView();
-
         userService.saveUser(user);
         modelAndView.setViewName("redirect:/admin/user-list");
         return modelAndView;
@@ -78,24 +72,14 @@ public class UserController {
     @GetMapping("admin/user-update/{id}")
     public ModelAndView updateUserForm(@PathVariable("id") Long id) {
         ModelAndView modelAndView = new ModelAndView("admin/user-update");
-        //User user = userService.findById(id);
-        /*Set<Role> uniqueRoles = roleService.findAllRoles();
-        Set<Role> userRoles = user.getRoles();
-        model.addAttribute("user", user);
-        model.addAttribute("uniqueRoles", uniqueRoles);
-        model.addAttribute("userRoles", userRoles);*/
-        //Set<Role> uniqueRoles = roleService.findAllRoles();
         modelAndView.addObject("users", userService.findById(id));
         modelAndView.addObject("roles", roleService.findAllRoles());
-
-        //modelAndView.addObject("id", id);
         return modelAndView;
     }
 
     @PostMapping("admin/user-update")
     public ModelAndView updateUser(User user) {
         ModelAndView modelAndView = new ModelAndView();
-
         userService.updateUser(user);
         modelAndView.setViewName("redirect:/admin/user-list");
         modelAndView.addObject("user", user);

@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-
 @Entity
 @Component
 @Table(name = "users")
@@ -31,7 +30,7 @@ public class User implements UserDetails {
    @Column
    private String password;
 
-   @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+   @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
            inverseJoinColumns = @JoinColumn(name = "role_id"))
    private Set<Role> roles = new HashSet<>();
@@ -40,7 +39,6 @@ public class User implements UserDetails {
    }
 
    public void setRoles(String roles) {
-      //this.roles = new HashSet<>();
       if (roles.contains("ADMIN")) {
          this.roles.add(new Role("ROLE_ADMIN"));
       }
@@ -89,8 +87,6 @@ public class User implements UserDetails {
       this.email = email;
    }
 
-   // *******************************
-
    @Override
    public Collection<? extends GrantedAuthority> getAuthorities() {
       return roles;
@@ -133,10 +129,6 @@ public class User implements UserDetails {
    public Set<Role> getRoles() {
       return roles;
    }
-
-   /*public String getRolesString() {
-      return roles.toString();
-   }*/
 
    public void setRoles(Set<Role> roles) {
       this.roles = roles;

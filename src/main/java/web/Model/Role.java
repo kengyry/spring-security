@@ -7,10 +7,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-// Этот класс реализует интерфейс GrantedAuthority, в котором необходимо переопределить только один метод getAuthority()
-// (возвращает имя роли).
-// Имя роли должно соответствовать шаблону: «ROLE_ИМЯ», например, ROLE_USER.
-
 @Entity
 @Component
 @Table(name = "roles")
@@ -20,14 +16,11 @@ public class Role implements GrantedAuthority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(unique = true)
     private String role;
 
-
-    @ManyToMany(mappedBy = "roles", cascade = CascadeType.MERGE)
+    @ManyToMany(mappedBy = "roles")
     private Set<User> users = new HashSet<>();
-
 
     public Set<User> getUsers() {
         return users;

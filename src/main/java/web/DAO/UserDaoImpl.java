@@ -1,12 +1,10 @@
 package web.DAO;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import web.Model.Role;
 import web.Model.User;
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -20,8 +18,6 @@ public class UserDaoImpl implements UserDao {
 
     @PersistenceContext
     private EntityManager entityManager;
-
-
 
     @Override
     public User findByLastName(String lastname) {
@@ -43,8 +39,6 @@ public class UserDaoImpl implements UserDao {
         return list;
     }
 
-    //Чтобы роли в базе roles не "размножались", здесь для роли юзера ищется такая же роль
-    // в БД, и присваивается ее id
     @Override
     public void saveUser(User user) {
         for (Role userRole : user.getRoles()) {
@@ -65,7 +59,6 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
-    // Но здесь это не работает, получаю исключение
     @Override
     public void updateUser(User user) {
         for (Role userRole : user.getRoles()) {
@@ -75,10 +68,11 @@ public class UserDaoImpl implements UserDao {
                 }
             }
         }
-
         entityManager.merge(user);
-
     }
 
-
 }
+
+
+
+

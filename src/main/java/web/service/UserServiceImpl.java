@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import web.DAO.UserDao;
 import web.Model.Role;
 import web.Model.User;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;

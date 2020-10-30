@@ -1,11 +1,8 @@
 package web.DAO;
-
 import org.springframework.stereotype.Repository;
 import web.Model.Role;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,7 +32,7 @@ public class RoleDaoImpl implements RoleDao {
     @Override
     public Set<Role> findAllRoles() {
         return new HashSet<>(entityManager.createQuery("SELECT r from Role r", Role.class)
-                .getResultList()); //.stream().filter(distinctByKey(Role::getRole)).collect(Collectors.toSet());
+                .getResultList()).stream().filter(distinctByKey(Role::getRole)).collect(Collectors.toSet());
     }
 
     @Override
