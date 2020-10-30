@@ -1,19 +1,27 @@
 package web.DAO;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import web.Model.Role;
 import web.Model.User;
 import javax.persistence.*;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Repository
 public class UserDaoImpl implements UserDao {
 
+    private final RoleDao roleDao;
+
+    @Autowired
+    public UserDaoImpl(RoleDao roleDao) {
+        this.roleDao = roleDao;
+    }
+
     @PersistenceContext
     private EntityManager entityManager;
+
+
 
     @Override
     public User findByLastName(String lastname) {
@@ -32,12 +40,18 @@ public class UserDaoImpl implements UserDao {
     public List<User> findAll() {
         List<User> list;
         list = entityManager.createQuery("from User").getResultList();
-        System.out.println(list);
         return list;
     }
 
     @Override
     public void saveUser(User user) {
+        for (Role userRole : user.getRoles()) {
+            for (Role dbRole : roleDao.findAllRoles()) {
+                if (dbRole.getAuthority().equals(userRole.getAuthority())) {
+                    userRole.setId(dbRole.getId());
+                }
+            }
+        }
         entityManager.persist(user);
     }
 
@@ -51,21 +65,19 @@ public class UserDaoImpl implements UserDao {
 
     @Override
     public void updateUser(User user) {
+
+
+        for (Role userRole : user.getRoles()) {
+            for (Role dbRole : roleDao.findAllRoles()) {
+                if (dbRole.getAuthority().equals(userRole.getAuthority())) {
+                    userRole.setId(dbRole.getId());
+                }
+            }
+        }
+
         entityManager.merge(user);
+
     }
 
-    @Override
-    public Set<Role> getRoles(Set<String> role) {
-        return new HashSet<>(entityManager.createQuery("SELECT r FROM Role r WHERE r.name in (:role)")
-                .setParameter("role", role)
-                .getResultList());
-    }
 
-    @Override
-    public Role getRole(String name) {
-        return entityManager.createQuery("SELECT r FROM Role r WHERE r.role = :roleName", Role.class)
-                .setParameter("roleName", name)
-                .setMaxResults(1)
-                .getSingleResult();
-    }
 }

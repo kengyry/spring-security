@@ -1,10 +1,10 @@
 package web.Model;
 
 import org.springframework.security.core.GrantedAuthority;
-
+import org.springframework.stereotype.Component;
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 // Этот класс реализует интерфейс GrantedAuthority, в котором необходимо переопределить только один метод getAuthority()
@@ -12,20 +12,22 @@ import java.util.Set;
 // Имя роли должно соответствовать шаблону: «ROLE_ИМЯ», например, ROLE_USER.
 
 @Entity
+@Component
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
-
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+
+    @Column(unique = true)
     private String role;
 
-    @ManyToMany(mappedBy = "roles")
+
+    @ManyToMany(mappedBy = "roles", cascade = CascadeType.MERGE)
     private Set<User> users = new HashSet<>();
+
 
     public Set<User> getUsers() {
         return users;
@@ -38,8 +40,7 @@ public class Role implements GrantedAuthority {
     public Role() {
     }
 
-    public Role(Long id, String role) {
-        this.id = id;
+    public Role(String role) {
         this.role = role;
     }
 
@@ -62,5 +63,25 @@ public class Role implements GrantedAuthority {
     @Override
     public String getAuthority() {
         return role;
+    }
+
+    @Override
+    public String toString() {
+        return role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role1 = (Role) o;
+        return Objects.equals(id, role1.id) &&
+                Objects.equals(role, role1.role) &&
+                Objects.equals(users, role1.users);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, role, users);
     }
 }

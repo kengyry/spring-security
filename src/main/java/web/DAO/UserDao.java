@@ -19,8 +19,6 @@ public interface UserDao {
 
     void updateUser(User user);
 
-    Set<Role> getRoles(Set<String> role);
 
-    Role getRole(String name);
 }
 

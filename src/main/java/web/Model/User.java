@@ -22,7 +22,7 @@ public class User implements UserDetails {
    @Column(name = "name")
    private String firstName;
 
-   @Column(name = "last_name", unique = true)
+   @Column(name = "last_name")
    private String lastName;
 
    @Column
@@ -31,7 +31,7 @@ public class User implements UserDetails {
    @Column
    private String password;
 
-   @ManyToMany
+   @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
            inverseJoinColumns = @JoinColumn(name = "role_id"))
    private Set<Role> roles = new HashSet<>();
@@ -39,10 +39,21 @@ public class User implements UserDetails {
    public User() {
    }
 
-   public User(String firstName, String lastName, String email, Set<Role> roles) {
+   public void setRoles(String roles) {
+      //this.roles = new HashSet<>();
+      if (roles.contains("ADMIN")) {
+         this.roles.add(new Role("ROLE_ADMIN"));
+      }
+      if (roles.contains("USER")) {
+         this.roles.add(new Role("ROLE_USER"));
+      }
+   }
+
+   public User(String firstName, String lastName, String email, String password, Set<Role> roles) {
       this.firstName = firstName;
       this.lastName = lastName;
       this.email = email;
+      this.password = password;
       this.roles = roles;
    }
 
@@ -122,6 +133,10 @@ public class User implements UserDetails {
    public Set<Role> getRoles() {
       return roles;
    }
+
+   /*public String getRolesString() {
+      return roles.toString();
+   }*/
 
    public void setRoles(Set<Role> roles) {
       this.roles = roles;

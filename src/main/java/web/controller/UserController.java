@@ -1,26 +1,33 @@
 package web.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import web.Model.Role;
 import web.Model.User;
+import web.service.RoleService;
 import web.service.UserService;
 
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+    private final RoleService roleService;
 
-    // после логина попадаем сюда
+    @Autowired
+    public UserController(UserService userService, RoleService roleService) {
+        this.userService = userService;
+        this.roleService = roleService;
+    }
+
     @GetMapping(value = "admin/user-list")
     public ModelAndView findAllAdmin() {
         ModelAndView modelAndView = new ModelAndView();
@@ -42,14 +49,19 @@ public class UserController {
     @GetMapping("admin/user-create")
     public ModelAndView createUserForm(User user) {
         ModelAndView modelAndView = new ModelAndView();
+        //User user = new User();
+        //Set<Role> roles = roleService.getRoles(roleService.findAllRoles());
+        Set<Role> uniqueRoles = roleService.findAllRoles();
+        modelAndView.addObject("users", user);
+        modelAndView.addObject("roles", uniqueRoles);
         modelAndView.setViewName("admin/user-create");
-        modelAndView.addObject("user", user);
         return modelAndView;
     }
 
     @PostMapping("admin/user-create")
     public ModelAndView createUser(User user) {
         ModelAndView modelAndView = new ModelAndView();
+
         userService.saveUser(user);
         modelAndView.setViewName("redirect:/admin/user-list");
         return modelAndView;
@@ -64,12 +76,18 @@ public class UserController {
     }
 
     @GetMapping("admin/user-update/{id}")
-    public ModelAndView updateUserForm(@PathVariable("id") Long id, Model model) {
-        ModelAndView modelAndView = new ModelAndView();
-        System.out.println("зашли в гет");
-        User user = userService.findById(id);
+    public ModelAndView updateUserForm(@PathVariable("id") Long id) {
+        ModelAndView modelAndView = new ModelAndView("admin/user-update");
+        //User user = userService.findById(id);
+        /*Set<Role> uniqueRoles = roleService.findAllRoles();
+        Set<Role> userRoles = user.getRoles();
         model.addAttribute("user", user);
-        modelAndView.setViewName("admin/user-update");
+        model.addAttribute("uniqueRoles", uniqueRoles);
+        model.addAttribute("userRoles", userRoles);*/
+        //Set<Role> uniqueRoles = roleService.findAllRoles();
+        modelAndView.addObject("users", userService.findById(id));
+        modelAndView.addObject("roles", roleService.findAllRoles());
+
         //modelAndView.addObject("id", id);
         return modelAndView;
     }
@@ -77,7 +95,7 @@ public class UserController {
     @PostMapping("admin/user-update")
     public ModelAndView updateUser(User user) {
         ModelAndView modelAndView = new ModelAndView();
-        System.out.println("зашли в пост");
+
         userService.updateUser(user);
         modelAndView.setViewName("redirect:/admin/user-list");
         modelAndView.addObject("user", user);
